@@ -15,6 +15,11 @@ namespace WebbShop
         {
         }
 
+        // Adding this parameterless constructor to solve InitialCreate problem.
+        public WebbShopDbContext()
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

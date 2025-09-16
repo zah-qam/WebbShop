@@ -30,7 +30,7 @@ namespace WebbShop
                 var user = new User
                 {
                     Username = "admin",
-                    PasswordHash = SecurityHelper.HashPassword("1234")
+                    PasswordHash = PasswordHelper.HashPassword("1234")
                 };
 
                 dbContext.Users.Add(user);

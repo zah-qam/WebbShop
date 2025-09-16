@@ -173,6 +173,13 @@ namespace WebbShop
                         o.OrderDate
                     })
                     .ToList();
+                // Om inga ordrar finns:
+                if (orders.Count == 0)
+                {
+                    Console.WriteLine("\n Inga ordrar hittades.");
+                    return;
+                }
+
                 Console.WriteLine("\nOrdrar:");
                 foreach (var order in orders)
                 {
@@ -189,6 +196,13 @@ namespace WebbShop
         {
             try
             {
+                // Om inga ordrar finns:
+                var hasOrders = dbContext.Orders.Any();
+                if (!hasOrders)
+                {
+                    Console.WriteLine("\n Det finns inga ordrar att ta bort.");
+                    return;
+                }
                 ListOrders();
                 Console.Write("Ange orderns ID för att ta bort den: ");
                 if (int.TryParse(Console.ReadLine(), out int orderId))

@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using WebbShop.Shared.Models;
 
 namespace WebbShop
 {

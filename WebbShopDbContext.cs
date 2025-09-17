@@ -16,6 +16,11 @@ namespace WebbShop
         {
         }
 
+        // Adding this parameterless constructor to solve InitialCreate problem.
+        public WebbShopDbContext()
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -26,6 +31,16 @@ namespace WebbShop
                     .Build();
                 optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Gör Username unikt
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
         }
 
     }

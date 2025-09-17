@@ -1,5 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using WebbShop.Shared.Models;
+using WebbShop.Shared;
 
 namespace WebbShop
 {
@@ -99,6 +101,134 @@ namespace WebbShop
                         Console.WriteLine("\nOgiltigt val, försök igen.");
                         break;
                 }
+            }
+        }
+
+        private void ListProducts()
+        {
+            var products = dbContext.Products.ToList();
+            Console.WriteLine("\nProdukter:");
+            foreach (var product in products)
+            {
+                Console.WriteLine($"{product.Id}: {product.Name} - {product.Description} - {product.Price:C}");
+            }
+        }
+
+
+        private void CreateOrder()
+        {
+            // Felhantering
+            try
+            {
+                Console.Write("\nAnge kundens namn: ");
+                var customerName = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(customerName))
+                {
+                    Console.WriteLine("Kundnamn får inte vara tomt.");
+                    return;
+                }
+
+                ListProducts();
+                Console.Write("Ange produktens ID för ordern: ");
+                if (int.TryParse(Console.ReadLine(), out int productId))
+                {
+                    var product = dbContext.Products.Find(productId);
+                    if (product != null)
+                    {
+                        var order = new Order
+                        {
+                            CustomerName = customerName,
+                            ProductId = productId,
+                            OrderDate = DateTime.Now,
+                        };
+                        dbContext.Orders.Add(order);
+                        dbContext.SaveChanges();
+                        Console.WriteLine("\nOrder skapad!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nProdukten hittades inte.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nOgiltigt produkt-ID.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nEtt fel inträffade: {ex.Message}");
+            }
+        }
+        private void ListOrders()
+        {
+            try
+            {
+                var orders = dbContext.Orders
+                    .Select(o => new
+                    {
+                        o.Id,
+                        o.CustomerName,
+                        ProductName = o.Product.Name,
+                        o.Status,
+                        o.OrderDate
+                    })
+                    .ToList();
+                // Om inga ordrar finns:
+                if (orders.Count == 0)
+                {
+                    Console.WriteLine("\n Inga ordrar hittades.");
+                    return;
+                }
+
+                Console.WriteLine("\nOrdrar:");
+                foreach (var order in orders)
+                {
+                    Console.WriteLine($"{order.Id}: {order.CustomerName} - {order.ProductName} - {order.Status} - {order.OrderDate} \n");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nEtt fel inträffade: {ex.Message}");
+            }
+        }
+
+        private void RemoveOrder()
+        {
+            try
+            {
+                // Om inga ordrar finns:
+                var hasOrders = dbContext.Orders.Any();
+                if (!hasOrders)
+                {
+                    Console.WriteLine("\n Det finns inga ordrar att ta bort.");
+                    return;
+                }
+                ListOrders();
+                Console.Write("Ange orderns ID för att ta bort den: ");
+                if (int.TryParse(Console.ReadLine(), out int orderId))
+                {
+                    var order = dbContext.Orders.Find(orderId);
+                    if (order != null)
+                    {
+                        dbContext.Orders.Remove(order);
+                        dbContext.SaveChanges();
+                        Console.WriteLine("\nOrder borttagen!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nOrdern hittades inte.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nOgiltigt order-ID.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nEtt fel inträffade: {ex.Message}");
             }
         }
     }

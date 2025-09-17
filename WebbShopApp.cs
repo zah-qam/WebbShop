@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebbShop.Models;
 using WebbShop.Shared.Models;
+using WebbShop.Shared;
 
 namespace WebbShop
 {

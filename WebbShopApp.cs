@@ -1,5 +1,5 @@
 ﻿
-
+using System.Text.RegularExpressions;
 using WebbShop.Shared.Models;
 using WebbShop.Shared;
 
@@ -68,7 +68,7 @@ namespace WebbShop
                 return;
             }
 
-            Console.WriteLine("\n====Välkommen till ShopApp!====");
+            Console.WriteLine("\n====Välkommen till WebbShopApp!====");
             bool running = true;
             while (running)
             {
@@ -123,9 +123,11 @@ namespace WebbShop
                 Console.Write("\nAnge kundens namn: ");
                 var customerName = Console.ReadLine();
 
-                if (string.IsNullOrWhiteSpace(customerName))
+                if (string.IsNullOrWhiteSpace(customerName) ||
+                    customerName.Length < 2 ||
+                    !Regex.IsMatch(customerName, @"^[A-Za-zÅÄÖåäö\s]+$"))
                 {
-                    Console.WriteLine("Kundnamn får inte vara tomt.");
+                    Console.WriteLine("Kundnamn får inte vara tomt och endast bokstäver och mellanslag tillåtna i namnet.");
                     return;
                 }
 

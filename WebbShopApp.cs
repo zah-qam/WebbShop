@@ -1,5 +1,9 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
+
+using System.Text.RegularExpressions;
+using WebbShop.Shared;
+using WebbShop.Shared.Models;
+using System.Text.RegularExpressions;
 
 namespace WebbShop
 {
@@ -119,18 +123,22 @@ namespace WebbShop
             try
             {
                 Console.Write("\nAnge kundens namn: ");
-                var customerName = Console.ReadLine();
+                string customerName = Console.ReadLine();
 
-                if (string.IsNullOrWhiteSpace(customerName))
+                // Regex: endast A-Ö, a-ö och mellanslag tillåts
+                if (string.IsNullOrWhiteSpace(customerName) ||
+                    customerName.Length < 2 ||
+                    !Regex.IsMatch(customerName, @"^[A-Za-zÅÄÖåäö\s]+$"))
                 {
-                    Console.WriteLine("Kundnamn får inte vara tomt.");
+                    Console.WriteLine(" Endast bokstäver och mellanslag tillåtna i namnet.");
                     return;
                 }
 
                 ListProducts();
                 Console.Write("Ange produktens ID för ordern: ");
-                if (int.TryParse(Console.ReadLine(), out int productId))
+                if (!int.TryParse(Console.ReadLine(), out int productId))
                 {
+                    Console.WriteLine("Ogiltigt nummer. Ange ett heltal.");
                     var product = dbContext.Products.Find(productId);
                     if (product != null)
                     {
@@ -173,6 +181,13 @@ namespace WebbShop
                         o.OrderDate
                     })
                     .ToList();
+                // Om inga ordrar finns:
+                if (orders.Count == 0)
+                {
+                    Console.WriteLine("\n Inga ordrar hittades.");
+                    return;
+                }
+
                 Console.WriteLine("\nOrdrar:");
                 foreach (var order in orders)
                 {
@@ -189,6 +204,13 @@ namespace WebbShop
         {
             try
             {
+                // Om inga ordrar finns:
+                var hasOrders = dbContext.Orders.Any();
+                if (!hasOrders)
+                {
+                    Console.WriteLine("\n Det finns inga ordrar att ta bort.");
+                    return;
+                }
                 ListOrders();
                 Console.Write("Ange orderns ID för att ta bort den: ");
                 if (int.TryParse(Console.ReadLine(), out int orderId))

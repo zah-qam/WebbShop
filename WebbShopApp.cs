@@ -1,10 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-
-using System.Text.RegularExpressions;
-using WebbShop.Shared;
-using WebbShop.Shared.Models;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace WebbShop
 {
